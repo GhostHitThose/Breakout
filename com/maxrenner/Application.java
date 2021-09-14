@@ -1,5 +1,7 @@
 package com.maxrenner;
 
+import com.maxrenner.gamefiles.Game;
+
 import javax.swing.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
