@@ -5,8 +5,8 @@ import java.io.IOException;
 
 public class LevelCreator {
 
-    public LevelCreator(FileWriter w){
-        int[][] levels = new int[][] {levelOne(w), levelTwo(w), levelThree(w), levelFour(w), levelFive(w)};
+    public static void loadLevels(FileWriter w){
+        int[][] levels = new int[][] {levelOne(), levelTwo(), levelThree(), levelFour(), levelFive()};
 
 
         for (int[] level : levels) {
@@ -28,7 +28,7 @@ public class LevelCreator {
         }
     }
 
-    public int[] levelOne(FileWriter w){
+    private static int[] levelOne(){
 
         return new int[]{
                 0,0,1,1,1,1,1,1,1,1,0,0,
@@ -37,7 +37,7 @@ public class LevelCreator {
         };
     }
 
-    public int[] levelTwo(FileWriter w){
+    private static int[] levelTwo(){
 
         return new int[] {
                 0,0,0,1,1,1,1,1,1,0,0,0,
@@ -46,7 +46,7 @@ public class LevelCreator {
         };
     }
 
-    public int[] levelThree(FileWriter w){
+    private static int[] levelThree(){
 
         return new int[] {
                 0,0,0,1,1,1,1,1,1,0,0,0,
@@ -55,7 +55,7 @@ public class LevelCreator {
         };
     }
 
-    public int[] levelFour(FileWriter w){
+    private static int[] levelFour(){
 
         return new int[] {
                 0,0,0,1,1,1,1,1,1,0,0,0,
@@ -64,7 +64,7 @@ public class LevelCreator {
         };
     }
 
-    public int[] levelFive(FileWriter w){
+    private static int[] levelFive(){
 
         return new int[] {
                 0,0,0,1,1,1,1,1,1,0,0,0,

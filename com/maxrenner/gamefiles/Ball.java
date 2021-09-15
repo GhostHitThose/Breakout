@@ -3,6 +3,7 @@ package com.maxrenner.gamefiles;
 import com.maxrenner.FrameVariables;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 public class Ball extends GameObject implements BallVariables, FrameVariables {
 
@@ -20,7 +21,7 @@ public class Ball extends GameObject implements BallVariables, FrameVariables {
         this.y -= this.vy;
     }
 
-    public void checkCollision(int sliderX, int sliderY, int sliderW, int sliderH){
+    public void checkCollision(int sliderX, int sliderY, int sliderW, int sliderH, ArrayList<Block[]> blocks){
         if(x <= 0 || x >= WIDTH-width){
             vx = -vx;
         }
@@ -33,6 +34,25 @@ public class Ball extends GameObject implements BallVariables, FrameVariables {
         }
         if(sliderY-sliderH == y && (x <= sliderX+sliderW && x >= sliderX)){
             vy = -vy;
+        }
+        if (y == 145){
+            System.out.println("t");
+        }
+
+        for (Block[] value : blocks) {
+            for (Block block : value) {
+                if (block.isDrawn && !block.isDestroyed) {
+                    if ((x + width == block.x || x == block.x + block.width) && (y - height <= block.y && y >= block.y + block.height)) {
+                        vx = -vx;
+                        block.isDestroyed = true;
+                    }
+                    if ((y == block.y + block.height || y - height == block.y) && (x >= block.x && x + width <= block.x + width)) {
+                        vy = -vy;
+                        block.isDestroyed = true;
+
+                    }
+                }
+            }
         }
     }
 
