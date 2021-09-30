@@ -7,7 +7,13 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 public class Application extends JFrame implements FrameVariables {
+
+    public static Application app;
+
     Application(){
+
+        app = this;
+
         setTitle(TITLE);
         Game game = new Game();
         game.getPreferredSize();

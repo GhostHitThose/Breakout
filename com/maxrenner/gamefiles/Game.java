@@ -1,11 +1,14 @@
 package com.maxrenner.gamefiles;
 
+import com.maxrenner.Application;
 import com.maxrenner.FrameVariables;
 import com.maxrenner.levelsystem.LevelID;
 import com.maxrenner.levelsystem.LevelManager;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferStrategy;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 public class Game extends JPanel implements Runnable, FrameVariables {
@@ -16,40 +19,13 @@ public class Game extends JPanel implements Runnable, FrameVariables {
     private boolean moveSlider = false;
     private LevelID level = LevelID.LEVEL_ONE;
     private String[] currentLevelData;
-    private ArrayList<Block[]> blocks = new ArrayList<>();
+    private final ArrayList<Block[]> blocks = new ArrayList<>();
+    private final BufferedImage image = new BufferedImage(FrameVariables.WIDTH, FrameVariables.HEIGHT, BufferedImage.TYPE_INT_RGB);
+    public static double deltaTime = 0;
 
     @Override
     public Dimension getPreferredSize(){
         return new Dimension(FrameVariables.WIDTH,FrameVariables.HEIGHT);
-    }
-
-    @Override
-    public void paintComponent(Graphics graphics){
-        Graphics2D g = (Graphics2D) graphics;
-        g.setColor(Color.darkGray);
-        g.fillRect(0,0, FrameVariables.WIDTH, FrameVariables.HEIGHT);
-
-        ball.draw(g);
-        slider.draw(g);
-
-        if(currentLevelData != null){
-            for(int j = 0; j < currentLevelData.length; j++){
-                String e = currentLevelData[j];
-                for(int i = 0; i < e.length(); i++){
-                    char num = e.charAt(i);
-                    if(num != '0'){
-                        if(!blocks.get(j)[i].isDestroyed){
-                            blocks.get(j)[i].draw(g);
-                            blocks.get(j)[i].isDrawn = true;
-                        } else {
-                            blocks.get(j)[i].isDrawn = false;
-                        }
-                    } else {
-                        blocks.get(j)[i].isDrawn = false;
-                    }
-                }
-            }
-        }
     }
 
     public void initBlocks(){
@@ -62,6 +38,12 @@ public class Game extends JPanel implements Runnable, FrameVariables {
                 blockRow[j] = block;
             }
             blocks.add(blockRow);
+        }
+
+        for(Block[] b : blocks){
+            for(Block e : b){
+                System.out.println(e.y);
+            }
         }
     }
 
@@ -79,16 +61,16 @@ public class Game extends JPanel implements Runnable, FrameVariables {
         gameState = GameState.RUNNING;
 
         long last = System.nanoTime();
-        double delta = 0, ns = 1000000000/60.0;
+        double ns = 1000000000/60.0;
 
         while(gameState == GameState.RUNNING){
             long now = System.nanoTime();
-            delta += (now-last)/ns;
+            deltaTime += (now-last)/ns;
             last = now;
 
-            while(delta >= 1){
+            while(deltaTime >= 1){
                 update();
-                delta--;
+                deltaTime--;
             }
 
             render();
@@ -115,7 +97,55 @@ public class Game extends JPanel implements Runnable, FrameVariables {
         currentLevelData = getLevelData(level);
     }
 
-    public void render(){ repaint(); }
+    public void render(){
+        if(Application.app.getBufferStrategy() == null){
+            Application.app.createBufferStrategy(3);
+        }
+
+        BufferStrategy bs = Application.app.getBufferStrategy();
+
+        renderGraphics(bs);
+
+        bs.show();
+
+    }
+
+    private void renderGraphics(BufferStrategy bs){
+        Graphics2D graphics = (Graphics2D) bs.getDrawGraphics();
+
+        Graphics2D g = (Graphics2D) image.getGraphics();
+
+        g.setColor(Color.darkGray);
+        g.fillRect(0,0, FrameVariables.WIDTH, FrameVariables.HEIGHT);
+
+        ball.draw(g);
+        slider.draw(g);
+
+        if(currentLevelData != null){
+            for(int j = 0; j < currentLevelData.length; j++){
+                String e = currentLevelData[j];
+                for(int i = 0; i < e.length(); i++){
+                    char num = e.charAt(i);
+                    if(num != '0'){
+                        if(!blocks.get(j)[i].isDestroyed){
+                            blocks.get(j)[i].draw(g);
+                            blocks.get(j)[i].isDrawn = true;
+                        } else {
+                            blocks.get(j)[i].isDrawn = false;
+                        }
+                    } else {
+                        blocks.get(j)[i].isDrawn = false;
+                    }
+                }
+            }
+        }
+
+        g.dispose();
+
+        graphics.drawImage(image, 8, 32, FrameVariables.WIDTH, FrameVariables.HEIGHT, null);
+
+        graphics.dispose();
+    }
 
     public String[] getLevelData(LevelID level){
         String[] currentLevelData;

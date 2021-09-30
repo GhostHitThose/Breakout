@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class Ball extends GameObject implements BallVariables, FrameVariables {
 
-    private int vx = (int)((Math.pow(-1,(int)(Math.random()*2)))*2), vy = 2;
+    private int vx = (int)((Math.pow(-1,(int)(Math.random()*2)))*2), vy = 1;
 
     Ball(){
         this.width = W;
@@ -32,24 +32,24 @@ public class Ball extends GameObject implements BallVariables, FrameVariables {
             System.out.println("Game over");
             Game.gameState = GameState.ENDING;
         }
-        if(sliderY-sliderH == y && (x <= sliderX+sliderW && x >= sliderX)){
+        if(sliderY-sliderH == y && (x <= sliderX+sliderW && x >= sliderX)) {
             vy = -vy;
         }
-        if (y == 145){
-            System.out.println("t");
-        }
 
-        for (Block[] value : blocks) {
-            for (Block block : value) {
-                if (block.isDrawn && !block.isDestroyed) {
-                    if ((x + width == block.x || x == block.x + block.width) && (y - height <= block.y && y >= block.y + block.height)) {
-                        vx = -vx;
-                        block.isDestroyed = true;
+        for (Block[] b : blocks) {
+            for (Block block : b) {
+                if (block.isDrawn) {
+                    if(y == 195){
+                        System.out.println("TTT");
                     }
-                    if ((y == block.y + block.height || y - height == block.y) && (x >= block.x && x + width <= block.x + width)) {
+                    if ((((y+height <= block.y+5) && (y+height >= block.y-5)) || ((y <= block.y+block.height+5))&&(y >= block.y+block.height-5)) && (x >= block.x-10 && x + width <= block.x + width+10)) {
+                        System.out.println(y);
                         vy = -vy;
                         block.isDestroyed = true;
-
+                    }
+                    if ((((x + width <= block.x+5)&&(x + width >= block.x-5)) || ((x <= block.x + block.width+5)&&(x >= block.x + block.width-5))) && (y+height <= block.y+block.height && y >= block.y)) {
+                        vx = -vx;
+                        block.isDestroyed = true;
                     }
                 }
             }
